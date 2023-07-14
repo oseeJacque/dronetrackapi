@@ -33,7 +33,7 @@ def detect_drone_in_image(image_path):
             # Creation d'identifiant pour chaque objet
             identities = [int(i + 1) for i in range(len(conf_list))]
 
-            image = draw_boxes(img=cv2.imread(image_path), bbox=resultat[0].boxes.xyxy.tolist(),
+            image_detect = draw_boxes(img=cv2.imread(image_path), bbox=resultat[0].boxes.xyxy.tolist(),
                                identities=identities, offset=(0, 0))
             """# Vérification si l'image a été correctement chargée
             if image is not None:
@@ -42,7 +42,7 @@ def detect_drone_in_image(image_path):
                 #Enregistrement de l'image
                 cv2.imwrite(save_dir_path, image) """
 
-        return outputs, image, len(conf_list)
+        return outputs, image_detect, len(conf_list)
     else:
         return {
             'predictions': []

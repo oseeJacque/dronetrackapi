@@ -32,6 +32,7 @@ def upload_image():
             filename = secure_filename("image.png")
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "detect.png")
+            file.save(filepath)
 
             predict, image_detect, nbr = detect_drone_in_image(image_path=filepath)
             cv2.imwrite(filepath2, image_detect)

@@ -31,12 +31,13 @@ def upload_image():
         if file and allowed_file(file.filename):
             filename = secure_filename("image.png")
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "detect.png")
 
-            predict, image, nbr = detect_drone_in_image(image_path=filepath)
-            cv2.imwrite(filepath, image)
+            predict, image_detect, nbr = detect_drone_in_image(image_path=filepath)
+            cv2.imwrite(filepath2, image_detect)
             result = {
                 'coordinates': predict,
-                'image': filepath,
+                'image': filepath2,
                 'num_objects': nbr
             }
             return jsonify(result)

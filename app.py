@@ -17,9 +17,9 @@ def  allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 @app.route('/')
 def home():
-    return render_template("index.html")
+    return render_template("You are welcome")
 
-@app.route('/detect/upload', methods =['POST', 'GET'])
+@app.route('/detect/upload', methods = ['POST', 'GET'])
 def upload_image():
     if request.method == 'POST':
         if 'file' not in request.files:

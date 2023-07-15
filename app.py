@@ -45,15 +45,7 @@ def upload_image():
             }
             return jsonify(result)
 
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+    return "Server error "
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0')

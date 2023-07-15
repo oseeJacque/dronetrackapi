@@ -67,7 +67,7 @@ def upload_image():
                 csv_filename = os.path.basename(csv_file_path)
                 result = {
                     'video': url_for('download_file', filename=os.path.splitext(filename)[0] + '.mp4', _external=True),
-                    'coordonnate':url_for('download_file', filename=os.path.splitext(csv_filename)[0] + 'csv', _external=True),
+                    'coordonnate': url_for('download_file', filename=os.path.splitext(filename)[0] + '.csv', _external=True),
                     'run': is_running
                 }
             else:

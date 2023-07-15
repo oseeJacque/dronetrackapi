@@ -4,9 +4,10 @@ import cv2
 from flask import Flask, flash, request, redirect, url_for, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
 
+from src.config import base_dir
 from src.predictions.detect_drone_in_image import detect_drone_in_image
 
-UPLOAD_FOLDER ='E:/AllProject/dronetrackingapi/src/uploadfolder'
+UPLOAD_FOLDER = os.path.join(base_dir, "uploadfolder")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
@@ -43,8 +44,16 @@ def upload_image():
                 'num_objects': nbr
             }
             return jsonify(result)
-    return 'Method not allowed', 405
 
+    return '''
+    <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    '''
 
 if __name__ == '__main__':
     app.run(debug=True)

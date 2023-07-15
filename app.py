@@ -120,6 +120,6 @@ def display_video(filename):
 """
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=False, host='0.0.0.0')
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

@@ -30,7 +30,7 @@ def convert_to_mp4(filepath):
 
 def  allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-@app.route('/')
+@app.route('/upload')
 def index():
     return '''
     <!doctype html>
@@ -41,6 +41,11 @@ def index():
       <input type="submit" value="Upload">
     </form>
     '''
+
+@app.route('/')
+def init():
+    return "Welcome to my api. add /upload to test the api"
+
 @app.route('/download/<filename>')
 def download_file(filename):
     return send_from_directory(app.config["SAVE_OUTPUTS_FILES"], filename, as_attachment=True)

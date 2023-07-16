@@ -44,7 +44,7 @@ def index():
 
 @app.route('/')
 def init():
-    return "Welcome to my api. add /upload to test the api"
+    return "Welcome to my API. Add /upload to test the api"
 
 @app.route('/download/<filename>')
 def download_file(filename):

@@ -1,6 +1,6 @@
 import os
 
-# import cv2
+import cv2
 from flask import Flask, flash, request, redirect, url_for, jsonify, send_file, render_template
 from werkzeug.utils import secure_filename
 from flask import send_from_directory

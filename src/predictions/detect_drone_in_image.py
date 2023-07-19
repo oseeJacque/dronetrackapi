@@ -10,8 +10,8 @@ def detect_drone_in_image(image_path):
     outputs = {
         "predictions": []
     }
-    # Charger l'image détectée
-    resultat = model(image_path)
+
+    resultat =model(image_path)
 
     if len(resultat) > 0:
         #Recuperation de la listes des coordonnées des objets detectés

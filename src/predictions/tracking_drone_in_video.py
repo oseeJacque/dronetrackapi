@@ -4,7 +4,7 @@ import os.path
 import cv2
 import numpy as np
 
-from src.config import model, video_path, tracker, video_input_path
+from src.config import video_path, tracker, video_input_path, model
 from src.utils.draw_bounding import draw_boxes
 
 is_running = True

@@ -83,7 +83,7 @@ def tracking_drone_in_video(filepath):
     cap_output.release()
     cv2.destroyAllWindows()
     is_running = False
-    return is_running, video_path ,csv_filepath
+    return is_running, video_path, csv_filepath
 
 
 """

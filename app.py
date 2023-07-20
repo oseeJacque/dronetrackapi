@@ -27,10 +27,9 @@ def convert_to_mp4(filepath):
     video.write_videofile(mp4_filepath, codec='libx264')
     return mp4_filepath
 
-@app.route('/upload',)
-def  allowed_file(filename):
+def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-"""
+
 @app.route('/upload')
 def index():
     return '''
@@ -42,7 +41,6 @@ def index():
       <input type="submit" value="Upload">
     </form>
     '''
-"""
 @app.route('/')
 def init():
     return "Welcome to my API. Add /upload to test the api"

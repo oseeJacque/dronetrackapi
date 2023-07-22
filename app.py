@@ -1,6 +1,7 @@
 import os
 import cv2
 from flask import Flask, flash, request, redirect, url_for, jsonify, send_file, render_template
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 from moviepy.editor import VideoFileClip
@@ -16,6 +17,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4', 'avi', 'mov'}
 
 
 app = Flask(__name__)
+CORS(app)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SAVE_OUTPUTS_FILES"] = SAVE_OUTPUTS_FILES
 app.config['SECRET_KEY'] = 'oseesoke'
@@ -52,6 +54,7 @@ def download_file(filename):
 @app.route('/detect/upload', methods = ['POST', 'GET'])
 def upload_image():
     if request.method == 'POST':
+        print("Received a POST request.")
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -84,7 +87,7 @@ def upload_image():
                 }
 
             return jsonify(result)
-
+    print("Received a not POST request.")
     return "No execution "
 
 

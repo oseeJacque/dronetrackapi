@@ -17,7 +17,6 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4', 'avi', 'mov'}
 
 
 app = Flask(__name__)
-CORS(app)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SAVE_OUTPUTS_FILES"] = SAVE_OUTPUTS_FILES
 app.config['SECRET_KEY'] = 'oseesoke'
@@ -49,10 +48,12 @@ def init():
 
 @app.route('/api/download/<filename>')
 def download_file(filename):
+
     return send_from_directory(app.config["SAVE_OUTPUTS_FILES"], filename, as_attachment=True)
 
-@app.route('/api/detect/upload', methods = ['POST', 'GET'])
+@app.route('/detect/upload', methods = ['POST', 'GET'])
 def upload_image():
+    print("Début denregistrement")
     if request.method == 'POST':
         print("Received a POST request.")
         if 'file' not in request.files:
@@ -63,6 +64,7 @@ def upload_image():
             flash('No file selected')
             return redirect(request.url)
         if file and allowed_file(file.filename):
+            print("Le fichier existe")
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "outputs", filename)

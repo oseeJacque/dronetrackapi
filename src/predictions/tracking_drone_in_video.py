@@ -32,58 +32,62 @@ def tracking_drone_in_video(filepath):
 
     frame_counter = 0
     scores = []
-    while ret:
-        results = model(frame)
-        for result in results:
-            detections = []  # List for drone coordonate
-            # Get x1, y1, x2, y2, score, class_id from each drone detect
-            for r in result.boxes.data.tolist():
-                x1, y1, x2, y2, score, class_id = r
-                x1 = int(x1)
-                x2 = int(x2)
-                y1 = int(y1)
-                y2 = int(y2)
-                class_id = int(class_id)
-                score = round(score, 2)
-                scores.append(score)
+    try :
+        while ret:
+            results = model(frame)
+            for result in results:
+                detections = []  # List for drone coordonate
+                # Get x1, y1, x2, y2, score, class_id from each drone detect
+                for r in result.boxes.data.tolist():
+                    x1, y1, x2, y2, score, class_id = r
+                    x1 = int(x1)
+                    x2 = int(x2)
+                    y1 = int(y1)
+                    y2 = int(y2)
+                    class_id = int(class_id)
+                    score = round(score, 2)
+                    scores.append(score)
 
-                detections.append([x1, y1, x2, y2, score])
+                    detections.append([x1, y1, x2, y2, score])
 
-            detections = np.array(detections)
-            # Remodelage du tableau en dimension 2 si nécessaire
-            if detections.ndim == 1:
-                detections = detections.reshape((1, -1))
-            # Vérification si detections n'est pas vide
-            if detections.size > 0:
+                detections = np.array(detections)
                 # Remodelage du tableau en dimension 2 si nécessaire
                 if detections.ndim == 1:
                     detections = detections.reshape((1, -1))
+                # Vérification si detections n'est pas vide
+                if detections.size > 0:
+                    # Remodelage du tableau en dimension 2 si nécessaire
+                    if detections.ndim == 1:
+                        detections = detections.reshape((1, -1))
 
-                # Appel de la fonction 'tracker.update' avec les detections
-                print(detections)
-                tracker.update(frame, detections)
-            else:
-                pass
+                    # Appel de la fonction 'tracker.update' avec les detections
+                    print(detections)
+                    tracker.update(frame, detections)
+                else:
+                    pass
 
-            for track in tracker.tracks:
-                #x, y, w, h = xyxy_to_xywh2(track.bbox[0], track.bbox[1], track.bbox[2], track.bbox[3],)
-                bbox = track.bbox
-                track_id = track.track_id
+                for track in tracker.tracks:
+                    #x, y, w, h = xyxy_to_xywh2(track.bbox[0], track.bbox[1], track.bbox[2], track.bbox[3],)
+                    bbox = track.bbox
+                    track_id = track.track_id
 
-                csv_writer.writerow([frame_counter, track_id, int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]), scores[frame_counter]])
+                    csv_writer.writerow([frame_counter, track_id, int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]), scores[frame_counter]])
 
-                identities = [int(i + 1) for i in range(len(tracker.tracks))]
-                draw_boxes(frame, bbox=[bbox], identities=identities, offset=(0, 0))
+                    identities = [int(i + 1) for i in range(len(tracker.tracks))]
+                    draw_boxes(frame, bbox=[bbox], identities=identities, offset=(0, 0))
 
-        cap_output.write(frame)
-        ret, frame = cap.read()
-        frame_counter += 1
+            cap_output.write(frame)
+            ret, frame = cap.read()
+            frame_counter += 1
 
-    cap.release()
-    cap_output.release()
-    cv2.destroyAllWindows()
-    is_running = False
-    return is_running, video_path, csv_filepath
+        cap.release()
+        cap_output.release()
+        cv2.destroyAllWindows()
+        is_running = False
+        return is_running, video_path, csv_filepath
+    except Exception as e:
+        print("Unable to open the video:", e)
+        return False, None, None
 
 
 """

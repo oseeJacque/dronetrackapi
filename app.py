@@ -31,6 +31,7 @@ def convert_to_mp4(filepath):
     return mp4_filepath
 
 def allowed_file(filename):
+
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/api/upload')
@@ -50,7 +51,9 @@ def init():
 
 @app.route('/api/download/<filename>')
 def download_file(filename):
-
+    ip_address = request.remote_addr
+    # Construire l'URL avec l'adresse IP publique et le nom du fichier
+    url = f"http://{ip_address}:5000/api/download/{filename}"
     return send_from_directory(app.config["SAVE_OUTPUTS_FILES"], filename, as_attachment=True)
 
 @app.route('/detect/upload', methods = ['POST', 'GET'])

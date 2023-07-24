@@ -52,8 +52,7 @@ def init():
 @app.route('/api/download/<filename>')
 def download_file(filename):
     ip_address = request.remote_addr
-    # Construire l'URL avec l'adresse IP publique et le nom du fichier
-    url = f"http://{ip_address}:5000/api/download/{filename}"
+    print(ip_address)
     return send_from_directory(app.config["SAVE_OUTPUTS_FILES"], filename, as_attachment=True)
 
 @app.route('/detect/upload', methods = ['POST', 'GET'])

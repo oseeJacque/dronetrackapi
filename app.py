@@ -17,7 +17,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4', 'avi', 'mov'}
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["SAVE_OUTPUTS_FILES"] = SAVE_OUTPUTS_FILES

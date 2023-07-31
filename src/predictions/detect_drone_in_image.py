@@ -11,7 +11,7 @@ def detect_drone_in_image(image_path):
         "predictions": []
     }
 
-    resultat =model(image_path)
+    resultat = model(image_path)
     try:
         if len(resultat) > 0:
             #Recuperation de la listes des coordonnées des objets detectés
@@ -44,19 +44,15 @@ def detect_drone_in_image(image_path):
 
             return outputs, image_detect, len(conf_list)
         else:
-            return {
-                'predictions': []
-            }, None
+            return None
     except Exception as e:
         print("Unable to open the video:", e)
-        return {
-                   'predictions': []
-               }, None
+        return None
 
 
 
 if __name__ == '__main__':
- predict,image, nbr = detect_drone_in_image(image_path="E:/AllProject/dronetrackingapi/src/testdata/2.jpg",)
+ predict,image, nbr = detect_drone_in_image(image_path="E:/AllProject/dronetrackingapi/src/uploadfolder/image.png")
  cv2.imshow("Image", image)
  cv2.waitKey(0)  # Attendre une touche pour fermer la fenêtre
  cv2.destroyAllWindows()

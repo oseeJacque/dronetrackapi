@@ -32,7 +32,7 @@ def tracking_drone_in_video(filepath):
 
     frame_counter = 0
     scores = []
-    try :
+    try:
         while ret:
             results = model(frame)
             for result in results:
@@ -60,18 +60,16 @@ def tracking_drone_in_video(filepath):
                     if detections.ndim == 1:
                         detections = detections.reshape((1, -1))
 
-                    # Appel de la fonction 'tracker.update' avec les detections
-                    print(detections)
                     tracker.update(frame, detections)
                 else:
                     pass
 
                 for track in tracker.tracks:
-                    #x, y, w, h = xyxy_to_xywh2(track.bbox[0], track.bbox[1], track.bbox[2], track.bbox[3],)
                     bbox = track.bbox
                     track_id = track.track_id
+                    x, y, w, h = xyxy_to_xywh2(track.bbox[0], track.bbox[1], track.bbox[2], track.bbox[3],)
 
-                    csv_writer.writerow([frame_counter, track_id, int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]), scores[frame_counter]])
+                    csv_writer.writerow([frame_counter, track_id, int(x), int(y), int(w), int(h), scores[frame_counter]])
 
                     identities = [int(i + 1) for i in range(len(tracker.tracks))]
                     draw_boxes(frame, bbox=[bbox], identities=identities, offset=(0, 0))

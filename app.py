@@ -1,5 +1,6 @@
 import os
 import cv2
+import numpy as np
 from flask import Flask, flash, request, redirect, url_for, jsonify, send_file, render_template
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -59,45 +60,49 @@ def download_file(filename):
 def upload_image():
     print(request.method)
     print("Début denregistrement")
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            print("Received a POST request.")
-            #flash('No file part')
-            return redirect(request.url)
-        file = request.files['file']
-        if file.name == '':
-            flash('No file selected')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            print("Le fichier existe")
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "outputs", filename)
-            file.save(filepath)
+    try:
+        if request.method == 'POST':
+            if 'file' not in request.files:
+                print("Received a POST request.")
+                #flash('No file part')
+                return redirect(request.url)
+            file = request.files['file']
+            if file.name == '':
+                flash('No file selected')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                print(file)
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "outputs", filename)
+                file.save(filepath)
 
-            try:
-                if filename.lower().endswith(('.mp4', '.avi', '.mov')):
-                    mp4_filepath = convert_to_mp4(filepath)
-                    is_running, video_path, csv_file_path = tracking_drone_in_video(mp4_filepath)
-                    csv_filename = os.path.basename(csv_file_path)
-                    result = {
-                        'video': url_for('download_file', filename=os.path.splitext(filename)[0] + '.mp4', _external=True),
-                        'coordonnate': url_for('download_file', filename=os.path.splitext(filename)[0] + '.csv', _external=True),
-                        'run': is_running
-                    }
-                    return jsonify(result)
-                else:
-                    predict, image_detect, nbr = detect_drone_in_image(image_path=filepath)
-                    cv2.imwrite(filepath2, image_detect)
-                    result = {
-                        'coordinates': predict,
-                        'image': url_for('download_file', filename=filename, _external=True),
-                        'num_objects': nbr
-                    }
-                    return jsonify(result)
-            except:
-                return None
-    print("Received a not POST request.")
+                try:
+                    if filename.lower().endswith(('.mp4', '.avi', '.mov')):
+                        mp4_filepath = convert_to_mp4(filepath)
+                        is_running, video_path, csv_file_path = tracking_drone_in_video(mp4_filepath)
+                        csv_filename = os.path.basename(csv_file_path)
+                        result = {
+                            'video': url_for('download_file', filename=os.path.splitext(filename)[0] + '.mp4', _external=True),
+                            'coordonnate': url_for('download_file', filename=os.path.splitext(filename)[0] + '.csv', _external=True),
+                            'run': is_running
+                        }
+                        return jsonify(result)
+                    else:
+                        predict, image_detect, nbr = detect_drone_in_image(image_path=filepath)
+                        cv2.imwrite(filepath2, image_detect)
+                        result = {
+                            'coordinates': predict,
+                            'image': url_for('download_file', filename=filename, _external=True),
+                            'num_objects': nbr
+                        }
+                        return jsonify(result)
+                except Exception as e:
+                    print(e)
+                    return None
+        print("Received a not POST request.")
+    except Exception as e:
+        print(e)
     return "No execution "
 
 
@@ -135,6 +140,37 @@ def display_video(filename):
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     return f"The video file '{filename}' has been uploaded and saved at: {filepath}"
 """
+@app.route('/process_image', methods=['POST'])
+def process_image():
+    try:
+        image_data = request.get_json()["image_data"]
+        image_np = np.array(image_data)
+        # Vérifier que l'objet envoyé est bien un tableau numpy 2D (image en niveaux de gris)
+        if len(image_np.shape) == 2:
+
+            image_np_color = np.stack((image_np,) * 3, axis=-1)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], "image.png")
+            filepath2 = os.path.join(app.config['UPLOAD_FOLDER'], "outputs", "image.png")
+
+            cv2.imwrite(filepath, image_np_color)
+            print("Debut de ladetection")
+            predict, image_detect, nbr = detect_drone_in_image(image_path=filepath)
+            print("Détection effectuée")
+            cv2.imwrite(filepath2, image_detect)
+            result = {
+                'coordinates': predict,
+                'image': url_for('download_file', filename="image.png", _external=True),
+                'num_objects': nbr
+            }
+            print(result)
+            return jsonify(result)
+
+        else:
+            return None
+
+    except Exception as e:
+        print(e)
+        return None
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
